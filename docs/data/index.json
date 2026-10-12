@@ -1,30 +1,35 @@
 {
+    "title": "Modular AI-Enabled Smart STEM Experiment Kit for School Classrooms",
     "team": [
         {
-            "name": "Team Member Name 1",
-            "email": "email@eng.pdn.ac.lk",
-            "eNumber": "E/yy/xxx"
+            "name": "M. K. H. Ahamed",
+            "email": "e22014@eng.pdn.ac.lk",
+            "eNumber": "E/22/014",
+            "role": "Team Leader"
         },
         {
-            "name": "Team Member Name 2",
-            "email": "email@eng.pdn.ac.lk",
-            "eNumber": "E/yy/xxx"
+            "name": "M. A. M. Assadh",
+            "email": "e22034@eng.pdn.ac.lk",
+            "eNumber": "E/22/034"
         },
         {
-            "name": "Team Member Name 3",
-            "email": "email@eng.pdn.ac.lk",
-            "eNumber": "E/yy/xxx"
+            "name": "M. F. M. Ayyash",
+            "email": "e22035@eng.pdn.ac.lk",
+            "eNumber": "E/22/035"
+        },
+        {
+            "name": "M. N. Aamir",
+            "email": "e22036@eng.pdn.ac.lk",
+            "eNumber": "E/22/036"
         }
     ],
     "supervisors": [
         {
-            "name": "Dr. Supervisor 1",
-            "email": "email@eng.pdn.ac.lk"
-        },
-        {
-            "name": "Supervisor 2",
-            "email": "email@eng.pdn.ac.lk"
+            "name": "Dr. Upul Jayasinghe",
+            "email": "upuljm@eng.pdn.ac.lk"
         }
     ],
-    "tags": ["Web", "Embedded Systems"]
+    "tags": ["Embedded Systems", "AI", "Web", "Education"],
+    "image": "cover_page.jpg",
+    "thumbnail": "thumbnail.jpg"
 }
