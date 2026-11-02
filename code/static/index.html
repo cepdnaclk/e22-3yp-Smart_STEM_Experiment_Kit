@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smart STEM Kit</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body data-view="teacher">
+
+  <!-- Switch between the two views. -->
+  <nav class="switch" aria-label="Choose a view">
+    <button type="button" id="btn-student" aria-pressed="false">Student</button>
+    <button type="button" id="btn-teacher" aria-pressed="true">Teacher</button>
+    <span class="switch-title">Smart STEM Experiment Kit</span>
+  </nav>
+
+  <!-- ===================== STUDENT VIEW (480x320 touchscreen) ===================== -->
+  <main id="student-view" aria-label="Student view">
+    <div class="s-frame">
+
+      <!-- Screen 1: pick an experiment -->
+      <div id="s-home" class="s-screen">
+        <header class="s-head">
+          <h1>Pick an experiment</h1>
+          <span id="s-kit" class="s-kit"></span>
+          <span id="s-link" class="s-link s-link-off">No link</span>
+        </header>
+        <div id="s-grid" class="s-grid"></div>
+      </div>
+
+      <!-- Screen 2: run the experiment -->
+      <div id="s-exp" class="s-screen" hidden>
+        <header class="s-head">
+          <button type="button" id="s-back" class="s-back">&lsaquo; Back</button>
+          <h2 id="s-title"></h2>
+          <span id="s-timer" class="s-timer">00:00</span>
+        </header>
+
+        <!-- Live tab -->
+        <div id="pane-live" class="s-pane s-live">
+          <div class="s-left">
+            <div class="graph-wrap"><canvas id="s-graph" aria-label="Live graph"></canvas></div>
+            <div id="s-hint" class="s-hint">
+              <div class="s-hint-title">AI hint</div>
+              <p id="s-hint-text" class="s-hint-text">No problems found.</p>
+              <p class="ai-label">Local AI: runs on the teacher's laptop, no internet needed</p>
+            </div>
+          </div>
+          <div class="s-right">
+            <div id="s-tiles" class="s-tiles"></div>
+            <button type="button" id="s-start" class="btn btn-primary">Start</button>
+            <div class="s-row">
+              <button type="button" id="s-stop" class="btn">Stop</button>
+              <button type="button" id="s-reset" class="btn">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Steps tab -->
+        <div id="pane-steps" class="s-pane s-steps-pane" hidden>
+          <ol id="s-steps" class="s-steps"></ol>
+        </div>
+
+        <!-- Results tab -->
+        <div id="pane-results" class="s-pane s-results" hidden>
+          <div class="s-table-wrap">
+            <p id="s-results-empty" class="s-empty">Press Start on the Live tab to record.</p>
+            <table id="s-table" class="s-table" hidden>
+              <thead>
+                <tr><th>What we measured</th><th>Average</th><th>Lowest</th><th>Highest</th></tr>
+              </thead>
+              <tbody id="s-table-body"></tbody>
+            </table>
+            <p id="s-count" class="s-count"></p>
+          </div>
+          <div class="s-save-row">
+            <span id="s-save-msg" class="s-save-msg" role="status"></span>
+            <button type="button" id="s-save" class="btn btn-primary">Save run</button>
+          </div>
+        </div>
+
+        <nav class="s-tabs" aria-label="Experiment tabs">
+          <button type="button" data-pane="live" aria-selected="true">Live</button>
+          <button type="button" data-pane="steps" aria-selected="false">Steps</button>
+          <button type="button" data-pane="results" aria-selected="false">Results</button>
+        </nav>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ===================== TEACHER VIEW (laptop) ===================== -->
+  <main id="teacher-view" aria-label="Teacher view">
+
+    <div class="banner" role="note">
+      Teacher supervision is mandatory. Low-voltage use only. A teacher must supervise chemical and thermal activities.
+    </div>
+
+    <div class="t-wrap">
+
+      <!-- Session and groups -->
+      <section class="panel toolbar" aria-label="Session and groups">
+        <div class="tool-group">
+          <form id="t-session-form" class="inline-form">
+            <label for="t-session-name" class="sr-only">Session name</label>
+            <input id="t-session-name" type="text" maxlength="80" placeholder="Session name (optional)">
+            <button type="submit" id="t-start-session" class="btn btn-primary btn-small">Start session</button>
+            <button type="button" id="t-end-session" class="btn btn-small" disabled>End session</button>
+          </form>
+          <span id="t-session-text" class="muted">No session running.</span>
+        </div>
+
+        <form id="t-group-form" class="inline-form">
+          <label for="t-group" class="sr-only">Group name</label>
+          <input id="t-group" type="text" maxlength="32" placeholder="Group, e.g. G5" size="12">
+          <label for="t-kit" class="sr-only">Kit ID</label>
+          <input id="t-kit" type="text" maxlength="32" placeholder="Kit, e.g. K05" size="12">
+          <button type="submit" class="btn btn-small">Add group</button>
+        </form>
+
+        <span id="t-link" class="pill pill-offline">Connecting...</span>
+        <span id="t-msg" class="t-msg" role="status"></span>
+      </section>
+
+      <div class="t-layout">
+
+        <div class="t-main">
+
+          <!-- Filters and kit cards -->
+          <section aria-label="Kits">
+            <div class="filters">
+              <h2>Kits</h2>
+              <label>Group
+                <select id="t-filter-group"><option value="">All groups</option></select>
+              </label>
+              <label>Experiment
+                <select id="t-filter-exp"><option value="">All experiments</option></select>
+              </label>
+              <label>Status
+                <select id="t-filter-status">
+                  <option value="">All</option>
+                  <option value="online">Online</option>
+                  <option value="offline">Offline</option>
+                  <option value="error">Error</option>
+                </select>
+              </label>
+            </div>
+            <div id="t-cards" class="cards"></div>
+          </section>
+
+          <!-- Kit detail -->
+          <section id="t-detail" class="panel" aria-label="Kit details" aria-live="polite">
+            <p id="t-detail-empty" class="muted">Click a kit to see its live graph, saved runs and AI notes.</p>
+            <div id="t-detail-body" hidden>
+              <div class="detail-head">
+                <h2 id="d-title"></h2>
+                <span id="d-status" class="pill"></span>
+              </div>
+              <div id="d-series" class="chips"></div>
+              <div class="graph-wrap tall"><canvas id="d-graph" aria-label="Live graph for the chosen kit"></canvas></div>
+              <div class="detail-cols">
+                <div>
+                  <h3>Saved runs</h3>
+                  <div id="d-runs"></div>
+                </div>
+                <div>
+                  <h3>AI notes</h3>
+                  <div id="d-notes"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Results table for all groups -->
+          <section class="panel" aria-label="Results for all groups">
+            <div class="results-head">
+              <h2>Results for all groups</h2>
+              <div class="inline-form">
+                <label for="t-export-session" class="sr-only">Session to export</label>
+                <select id="t-export-session"></select>
+                <button type="button" id="t-export" class="btn btn-primary btn-small">Export CSV</button>
+              </div>
+            </div>
+            <div id="t-results" class="table-scroll"></div>
+          </section>
+
+        </div>
+
+        <!-- AI alerts -->
+        <aside class="t-side">
+          <section class="panel" aria-label="AI alerts">
+            <h2>AI alerts <span id="t-alert-count" class="count">0</span></h2>
+            <p class="ai-label">Local AI: runs on the teacher's laptop, no internet needed</p>
+            <p class="ai-label">The AI only advises. A teacher decides what to do.</p>
+            <div id="t-alerts"></div>
+          </section>
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Switch between the Student and Teacher views.
+    // Use #student or #teacher in the address. Use ?kit=K03 to set the kit for the student view.
+    (function () {
+      function show(view) {
+        document.body.dataset.view = view;
+        document.getElementById("btn-student").setAttribute("aria-pressed", String(view === "student"));
+        document.getElementById("btn-teacher").setAttribute("aria-pressed", String(view === "teacher"));
+        if (location.hash.slice(1) !== view) {
+          history.replaceState(null, "", location.pathname + location.search + "#" + view);
+        }
+        window.dispatchEvent(new Event("viewchange"));
+      }
+      document.getElementById("btn-student").addEventListener("click", function () { show("student"); });
+      document.getElementById("btn-teacher").addEventListener("click", function () { show("teacher"); });
+      window.addEventListener("hashchange", function () {
+        show(location.hash.slice(1) === "student" ? "student" : "teacher");
+      });
+      show(location.hash.slice(1) === "student" ? "student" : "teacher");
+    })();
+  </script>
+  <script src="/static/student.js"></script>
+  <script src="/static/teacher.js"></script>
+</body>
+</html>

@@ -146,6 +146,21 @@ The prototype is designed for **low-voltage educational use only**. The electric
 
 Estimated funding requirement: **approximately LKR 65,300** for one complete functional prototype, including a LKR 5,000 allowance for PCB and component replacement. No paid cloud hosting is required, since the system can run on local infrastructure, university resources or free/student-tier services.
 
+## Running the Code
+
+The teacher-laptop software (FastAPI backend, web UI and kit simulator) is in the [`code/`](code/) folder. See [`code/README.md`](code/README.md) for full setup steps.
+
+Quick start (Windows, from the `code` folder):
+
+```
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
+
+In a second terminal: `venv\Scripts\activate` then `python simulator\simulate.py`. Open http://localhost:8000.
+
 ## Deliverables
 
 - **Hardware:** STM32 base unit, interface PCB, six sensor modules, touchscreen HMI, power system, enclosure and experiment fixtures
