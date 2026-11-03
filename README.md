@@ -40,7 +40,7 @@ The system is organised into four layers:
 | Layer | Role |
 |---|---|
 | **Sensing** | Interchangeable sensor modules collect data |
-| **Embedded Processing** | STM32 Nucleo-F446RE validates, calibrates and processes data |
+| **Embedded Processing** | STM32F407VET6 board validates, calibrates and processes data |
 | **User Interface** | ESP32-S3 touchscreen for experiment selection, live values and graphs |
 | **Software / AI** | Backend handles storage, sessions, the teacher dashboard and AI analysis |
 
@@ -161,6 +161,31 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
 
 In a second terminal: `venv\Scripts\activate` then `python simulator\simulate.py`. Open http://localhost:8000.
 
+## Breadboard Prototype Wiring (Version 1)
+
+Schematic: [`docs/EasyEDA/Breadboard Version 1.pdf`](docs/EasyEDA/Breadboard%20Version%201.pdf) and [`.png`](docs/EasyEDA/Breadboard%20Version%201.png). Sensor modules are drawn with stand-in symbols, so check pin order on the real modules.
+
+| Connection | STM32F407VET6 pin | Notes |
+|---|---|---|
+| I2C SCL (BH1750, MPU6050, INA219) | PB6 | Shared bus |
+| I2C SDA (BH1750, MPU6050, INA219) | PB7 | Shared bus |
+| HC-SR04 TRIG | PC7 | |
+| HC-SR04 ECHO | PC6 | Echo is 5 V. It goes through a divider (R2 + R3 = 2 kΩ in series, to GND) to 3.3 V |
+| DHT22 DATA | PC1 | Pull-up is on the module |
+| HX711 DT | PC2 | HX711 powered at 3.3 V |
+| HX711 SCK | PC3 | |
+| UART TX (to ESP32-S3 GPIO18) | PA2 | |
+| UART RX (from ESP32-S3 GPIO17) | PA3 | TX and RX are crossed |
+| ST-Link SWDIO / SWCLK | PA13 / PA14 | Plus GND and NRST |
+
+I2C addresses: BH1750 0x23 (ADDR to GND), INA219 0x40 (A0 = A1 = GND). MPU6050 is at its default address (AD0 to GND).
+
+Power: the F407 board gives 3.3 V and 5 V on the power header. BH1750, DHT22, MPU6050, HX711 and INA219 (VS) use 3.3 V. HC-SR04 uses 5 V. INA219 IN+ is on 5 V and IN- goes to the test load (`INA_LOAD`).
+
+Test load for INA219: R4 to R8, five 1 kΩ in parallel (200 Ω), to GND. The 2 kΩ and 220 Ω parts were not available, so the Echo divider uses two 1 kΩ in series.
+
+Known open item: resistor footprint pin-number error in EasyEDA. The PCB board outline (124 x 83 mm) is a placeholder.
+
 ## Deliverables
 
 - **Hardware:** STM32 base unit, interface PCB, six sensor modules, touchscreen HMI, power system, enclosure and experiment fixtures
@@ -173,7 +198,7 @@ In a second terminal: `venv\Scripts\activate` then `python simulator\simulate.py
 
 | Area | Tools |
 |---|---|
-| Main controller | STM32 Nucleo-F446RE, STM32CubeIDE |
+| Main controller | STM32F407VET6 system board, STM32CubeIDE, ST-Link V2 |
 | Student interface | ESP32-S3 4-inch touchscreen board |
 | Sensors | DHT22, BH1750, HC-SR04, MPU6050, load cell + HX711, INA219 |
 | Software | Backend framework, database, web frontend, AI/ML framework |
@@ -202,4 +227,4 @@ Department of Computer Engineering, University of Peradeniya
 
 ## Project Status
 
-Currently in the **proposal and planning phase**. This page will be updated as each development phase is completed.
+Breadboard prototype schematic (Version 1) is finished in EasyEDA. The teacher-laptop software (backend, web UI, simulator) is working with simulated kits. Next: build the breadboard prototype, write the STM32 and ESP32-S3 firmware, then design the carrier PCB. This page will be updated as each phase is completed.

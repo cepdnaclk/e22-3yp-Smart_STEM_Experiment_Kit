@@ -1,6 +1,6 @@
 # Smart STEM Experiment Kit - Local Classroom System
 
-CO3060, University of Peradeniya, Team 10 - Timeswire.
+CO3060, University of Peradeniya, Team 10 - Timesware.
 
 This is the teacher's laptop software. It receives sensor readings from the
 kits, stores them in one SQLite file, and shows them in a browser.
